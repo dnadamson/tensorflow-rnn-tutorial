@@ -13,11 +13,12 @@
 import numpy as np
 import math
 
-def rnn_sampling_sequencer(data, sample_size, sequence_size, nb_epochs):
+def rnn_sampling_sequencer(data, sample_size, n_forward, sequence_size, nb_epochs):
     """
     Input data must already be a batch of long sequences of pairs (tmin, tmax).
     The sequencer will split them up into consecutive sequences of length sequence_size.
     The data is also averaged over sequences of sample_size.
+    Target data is the same as trainig data, shited by n_forward forward.
     When training, you have to preserve the state of the RNN through an epoch
     but reset it for each new epoch.
     """
@@ -31,9 +32,9 @@ def rnn_sampling_sequencer(data, sample_size, sequence_size, nb_epochs):
     data = np.mean(data, axis=2)
     
     # shift by one for targets and split into consecutive sequences
-    rounded_data_len = (data.shape[1]-1)//sequence_size*sequence_size
+    rounded_data_len = (data.shape[1]-n_forward)//sequence_size*sequence_size
     xdata = np.reshape(data[:, 0:rounded_data_len + 0], [batch_size, -1, sequence_size, pair_size])
-    ydata = np.reshape(data[:, 1:rounded_data_len + 1], [batch_size, -1, sequence_size, pair_size])
+    ydata = np.reshape(data[:, n_forward:rounded_data_len + n_forward], [batch_size, -1, sequence_size, pair_size])
     nb_batches = xdata.shape[1]
 
     for epoch in range(nb_epochs):
