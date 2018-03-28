@@ -15,29 +15,31 @@ import math
 
 def rnn_sampling_sequencer(data, sample_size, sequence_size, nb_epochs):
     """
-    Input data must already be a batch of long sequences.
+    Input data must already be a batch of long sequences of pairs (tmin, tmax).
     The sequencer will split them up into consecutive sequences of length sequence_size.
-    You have to preserve the state of the RNN through an epoch but reset it for each new epoch.
-    The data is also averaged over sequences of sample_size
+    The data is also averaged over sequences of sample_size.
+    When training, you have to preserve the state of the RNN through an epoch
+    but reset it for each new epoch.
     """
-    data_len = data.shape[1]
     batch_size = data.shape[0]
+    data_len = data.shape[1]
+    pair_size = data.shape[2] # should be 2
     
     # resample
     data_len = data_len//sample_size*sample_size
-    data = np.reshape(data[:,:data_len], [batch_size, -1, sample_size])
+    data = np.reshape(data[:,:data_len], [batch_size, -1, sample_size, pair_size])
     data = np.mean(data, axis=2)
     
     # shift by one for targets and split into consecutive sequences
     rounded_data_len = (data.shape[1]-1)//sequence_size*sequence_size
-    xdata = np.reshape(data[:, 0:rounded_data_len + 0], [batch_size, -1, sequence_size])
-    ydata = np.reshape(data[:, 1:rounded_data_len + 1], [batch_size, -1, sequence_size])
+    xdata = np.reshape(data[:, 0:rounded_data_len + 0], [batch_size, -1, sequence_size, pair_size])
+    ydata = np.reshape(data[:, 1:rounded_data_len + 1], [batch_size, -1, sequence_size, pair_size])
     nb_batches = xdata.shape[1]
 
     for epoch in range(nb_epochs):
         for batch in range(nb_batches):
-            x = xdata[:,batch,:]
-            y = ydata[:,batch,:]
+            x = xdata[:,batch,:,:]
+            y = ydata[:,batch,:,:]
             yield x, y, epoch
         
     
