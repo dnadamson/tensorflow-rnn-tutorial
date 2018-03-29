@@ -30,14 +30,18 @@ def rnn_sampling_sequencer(data, sample_size, n_forward, sequence_size, nb_epoch
     data_len = data_len//sample_size*sample_size
     data = np.reshape(data[:,:data_len], [batch_size, -1, sample_size, pair_size])
     data = np.mean(data, axis=2)
-    
-    # shift by one for targets and split into consecutive sequences
-    rounded_data_len = (data.shape[1]-n_forward)//sequence_size*sequence_size
-    xdata = np.reshape(data[:, 0:rounded_data_len + 0], [batch_size, -1, sequence_size, pair_size])
-    ydata = np.reshape(data[:, n_forward:rounded_data_len + n_forward], [batch_size, -1, sequence_size, pair_size])
-    nb_batches = xdata.shape[1]
 
     for epoch in range(nb_epochs):
+        
+        #shuffle useful ?
+        np.random.shuffle(data)
+        
+        # shift by one for targets and split into consecutive sequences
+        rounded_data_len = (data.shape[1]-n_forward)//sequence_size*sequence_size
+        xdata = np.reshape(data[:, 0:rounded_data_len + 0], [batch_size, -1, sequence_size, pair_size])
+        ydata = np.reshape(data[:, n_forward:rounded_data_len + n_forward], [batch_size, -1, sequence_size, pair_size])
+        nb_batches = xdata.shape[1]
+    
         for batch in range(nb_batches):
             x = xdata[:,batch,:,:]
             y = ydata[:,batch,:,:]
