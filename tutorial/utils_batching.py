@@ -17,7 +17,7 @@ import numpy as np
 import math
 import sys
 
-def rnn_multistation_sampling_temperature_sequencer(filepattern, resample_by=1, batch_size=sys.maxsize, sequence_size=sys.maxsize, n_forward=0, nb_epochs=1, tminmax=False, keepinmem=True):
+def rnn_multistation_sampling_temperature_sequencer(filenames, resample_by=1, batch_size=sys.maxsize, sequence_size=sys.maxsize, n_forward=0, nb_epochs=1, tminmax=False, keepinmem=True):
     """
     Loads temperature data from CSV files.
     Each data sequence is resampled by "resample_by". Use 1 not to resample.
@@ -37,9 +37,9 @@ def rnn_multistation_sampling_temperature_sequencer(filepattern, resample_by=1, 
       sample, target: the pair of training samples and targets, of size batch_size or less
       date: sequence of dates corresponding to the samples (assumed the same across batch)
     """
-    filenames = gfile.get_matching_files(filepattern)
-    print('Pattern "{}" matches {} files'.format(filepattern, len(filenames)))
-    filenames = np.array(filenames)
+    #filenames = gfile.get_matching_files(filepattern)
+    #print('Pattern "{}" matches {} files'.format(filepattern, len(filenames)))
+    #filenames = np.array(filenames)
     
     def adjust(ary, n):
         return ary[:ary.shape[0]//n*n]
