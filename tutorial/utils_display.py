@@ -81,8 +81,8 @@ def picture_this_5(visu_data, station):
     subplot = 231
     for samples, targets, dates, _, _ in visu_data:
         plt.subplot(subplot)
-        h1 = plt.fill_between(dates, samples[station,:,0], samples[station,:,1], label="samples")
-        h2 = plt.fill_between(dates, targets[station,:,0], targets[station,:,1], label="targets")
+        h1 = plt.fill_between(dates, samples[station,:,0], samples[station,:,1], label="features")
+        h2 = plt.fill_between(dates, targets[station,:,0], targets[station,:,1], label="labels")
         h2.set_zorder(-1)
         if subplot == 231:
             plt.legend(handles=[h1, h2])
@@ -109,4 +109,35 @@ def picture_this_6(evaldata, evaldates, prime_data, results, primelen, runlen, o
     plt.show()
 
     rmse = math.sqrt(np.mean((evaldata[offset+primelen:offset+primelen+rmselen] - results[:rmselen])**2))
+    print("RMSE on {} predictions (shaded area): {}".format(rmselen, rmse))
+    
+def picture_this_7(features):
+    subplot = 231
+    for i in range(6):
+        plt.subplot(subplot)
+        plt.plot(features[i])
+        subplot += 1
+    plt.show()
+    
+def picture_this_8(data, prime_data, results, offset, primelen, runlen, rmselen):
+    disp_data = data[offset:offset+primelen+runlen]
+    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+    plt.subplot(211)
+    plt.text(primelen,2.5,"DATA |", color=colors[1], horizontalalignment="right")
+    plt.text(primelen,2.5,"| PREDICTED", color=colors[0], horizontalalignment="left")
+    displayresults = np.ma.array(np.concatenate((np.zeros([primelen]), results)))
+    displayresults = np.ma.masked_where(displayresults == 0, displayresults)
+    plt.plot(displayresults)
+    displaydata = np.ma.array(np.concatenate((prime_data, np.zeros([runlen]))))
+    displaydata = np.ma.masked_where(displaydata == 0, displaydata)
+    plt.plot(displaydata)
+    plt.subplot(212)
+    plt.text(primelen,2.5,"DATA |", color=colors[1], horizontalalignment="right")
+    plt.text(primelen,2.5,"| +PREDICTED", color=colors[0], horizontalalignment="left")
+    plt.plot(displayresults)
+    plt.plot(disp_data)
+    plt.axvspan(primelen, primelen+rmselen, color='grey', alpha=0.1, ymin=0.05, ymax=0.95)
+    plt.show()
+
+    rmse = math.sqrt(np.mean((data[offset+primelen:offset+primelen+rmselen] - results[:rmselen])**2))
     print("RMSE on {} predictions (shaded area): {}".format(rmselen, rmse))
