@@ -26,7 +26,7 @@ Part 1: [tutorial/00_RNN_predictions_playground.ipynb](tutorial/00_RNN_predictio
 
 Part 2: [tutorial/01_RNN_generator_playground.ipynb](tutorial/01_RNN_generator_playground.ipynb) 
 
-Part 3: [tutorial/02_RNN_generator_temperatures_playground.ipynb](tutorial/01_RNN_generator_temperatures_playground.ipynb) 
+Part 3: [tutorial/02_RNN_generator_temperatures_playground.ipynb](tutorial/02_RNN_generator_temperatures_playground.ipynb) 
 
 ---
 *Disclaimer: This is not an official Google product but sample code provided for an educational purpose*
